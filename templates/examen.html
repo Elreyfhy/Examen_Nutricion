@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación - Nutrición Clínica</title>
+    <style>
+        body { background-color: #0b0c10; color: #c5c6c7; font-family: 'Segoe UI', sans-serif; padding: 20px; margin: 0; }
+        h1 { color: #66fcf1; text-align: center; text-shadow: 0 0 10px rgba(102,252,241,0.7); letter-spacing: 2px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .pregunta { background-color: #1f2833; border-left: 4px solid #45a29e; padding: 20px; margin-bottom: 25px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .pregunta p { font-size: 18px; color: #ffffff; margin-top: 0; }
+        
+        /* Opciones de respuesta */
+        label { display: block; margin: 10px 0; cursor: pointer; font-size: 16px; padding: 8px; border-radius: 4px; transition: background 0.3s; }
+        label:hover { background-color: rgba(102, 252, 241, 0.1); }
+        input[type="radio"] { accent-color: #66fcf1; margin-right: 10px; cursor: pointer; }
+        
+        /* Caja de retroalimentación oculta por defecto */
+        .feedback { display: none; margin-top: 15px; padding: 15px; border-radius: 4px; background-color: #0b0c10; font-size: 15px; line-height: 1.5; }
+        
+        .submit-btn { background-color: transparent; color: #66fcf1; border: 2px solid #66fcf1; padding: 15px 30px; font-size: 18px; font-weight: bold; cursor: pointer; width: 100%; border-radius: 5px; margin-bottom: 50px; }
+        .submit-btn:hover { background-color: #66fcf1; color: #0b0c10; box-shadow: 0 0 20px rgba(102, 252, 241, 0.6); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EVALUACIÓN DE NUTRICIÓN CLÍNICA</h1>
+        <form method="POST">
+            {% for p in preguntas %}
+            <div class="pregunta" id="preg_{{ p.id }}">
+                <p><strong>{{ p.id }}. {{ p.texto }}</strong></p>
+                
+                {% for letra, opcion in p.opciones.items() %}
+                <label>
+                    <input type="radio" name="{{ p.id }}" value="{{ letra }}" required 
+                    onchange="verificar(this, '{{ p.id }}', '{{ letra }}', '{{ p.respuesta_correcta }}')"> 
+                    {{ letra }}) {{ opcion }}
+                </label>
+                {% endfor %}
+                
+                <div class="feedback" id="feedback_{{ p.id }}">
+                    <strong id="msj_{{ p.id }}" style="font-size: 17px;"></strong><br><br>
+                    <span style="color: #c5c6c7;"><strong>Justificación:</strong> {{ p.explicacion }}</span>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="submit-btn">ENVIAR Y GUARDAR RESULTADOS</button>
+        </form>
+    </div>
+
+    <script>
+        function verificar(radio, idPregunta, seleccion, correcta) {
+            let divPregunta = document.getElementById('preg_' + idPregunta);
+            let cajaFeedback = document.getElementById('feedback_' + idPregunta);
+            let mensaje = document.getElementById('msj_' + idPregunta);
+
+            // Bloquea los clicks en esa pregunta para que no cambie la respuesta
+            divPregunta.style.pointerEvents = "none";
+            
+            // Muestra la caja de feedback
+            cajaFeedback.style.display = "block";
+
+            // Verifica si acertó o falló
+            if (seleccion === correcta) {
+                cajaFeedback.style.borderLeft = "4px solid #4CAF50";
+                mensaje.style.color = "#4CAF50";
+                mensaje.innerText = "¡Respuesta Correcta!";
+            } else {
+                cajaFeedback.style.borderLeft = "4px solid #F44336";
+                mensaje.style.color = "#F44336";
+                mensaje.innerText = "Incorrecto. La respuesta correcta era la '" + correcta + "'.";
+            }
+        }
+    </script>
+</body>
+</html>
