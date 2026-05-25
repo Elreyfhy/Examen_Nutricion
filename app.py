@@ -60,7 +60,10 @@ def inicio():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)
-    import os
+import os
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
+    # Render asigna un puerto automáticamente en la variable de entorno 'PORT'
+    port = int(os.environ.get('PORT', 5050))
+    # Es vital usar host='0.0.0.0' para que Render pueda conectar
     app.run(host='0.0.0.0', port=port)
